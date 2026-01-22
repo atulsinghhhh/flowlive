@@ -80,7 +80,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
   // Variants for Page Transition
   const pageVariants = {
     initial: { opacity: 0, scale: 0.98 },
-    animate: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: "easeOut" } },
+    animate: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
     exit: { opacity: 0, scale: 0.98 }
   };
 
@@ -156,10 +156,18 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                 
                 {/* Go Live Button with Motion */}
                 <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(124, 92, 255, 0.4)" }}
+                    whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    animate={{ boxShadow: "0 0 10px rgba(124, 92, 255, 0.2)" }}
-                    transition={{ duration: 0.2 }}
+                    animate={{ 
+                        boxShadow: ["0 0 0px rgba(124, 92, 255, 0)", "0 0 20px rgba(124, 92, 255, 0.3)", "0 0 0px rgba(124, 92, 255, 0)"] 
+                    }}
+                    transition={{ 
+                        boxShadow: {
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }
+                    }}
                     onClick={handleGoLive}
                     disabled={loading}
                     className="px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
