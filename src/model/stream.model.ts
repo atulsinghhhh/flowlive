@@ -29,7 +29,7 @@ const streamSchema = new Schema<IStream>({
     agoraChannel: {
       type: String,
       required: true,
-      unique: true
+      index: true 
     },
     isLive: {
       type: Boolean,

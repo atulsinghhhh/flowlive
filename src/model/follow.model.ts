@@ -21,7 +21,6 @@ const followSchema = new Schema<IFollow>({
     }
 }, { timestamps: true });
 
-// Prevent duplicate follows
 followSchema.index({ followerId: 1, followingId: 1 }, { unique: true });
 
 export const Follow = models.Follow || model<IFollow>("Follow", followSchema);

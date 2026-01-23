@@ -97,6 +97,7 @@ export const StreamSetup = ({ initialTitle = "", initialCategory = "Just Chattin
             <option>Music</option>
             <option>IRL</option>
             <option>Creative</option>
+            <option>Other</option>
           </select>
         </div>
 

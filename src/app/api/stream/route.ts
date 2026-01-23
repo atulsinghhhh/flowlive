@@ -77,11 +77,21 @@ export async function POST(request: NextRequest) {
         updateData.thumbnailUrl = thumbnailUrl;
     }
 
-    const stream = await Stream.findOneAndUpdate(
-      { agoraChannel },
-      updateData,
-      { upsert: true, new: true }
+    // 1. Mark any existing live streams by this user as ended
+    await Stream.updateMany(
+        { streamerId: session.user.id, isLive: true },
+        { isLive: false }
     );
+
+    // 2. Create a NEW stream record
+    const stream = await Stream.create({
+        streamerId: session.user.id,
+        title,
+        category,
+        agoraChannel,
+        thumbnailUrl,
+        isLive: true
+    });
 
     return NextResponse.json({ stream }, { status: 201 });
   } catch (error) {

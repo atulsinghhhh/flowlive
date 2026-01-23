@@ -2,9 +2,9 @@ import http from "http";
 import { Server } from "socket.io";
 import dotenv from "dotenv";
 
-console.log("Loading .env...");
-dotenv.config({ path: ".env.local" });
-console.log("MONGODB_URI:", process.env.MONGODB_URI ? "Found" : "Missing");
+// console.log("Loading .env...");
+// dotenv.config({ path: ".env.local" });
+// console.log("MONGODB_URI:", process.env.MONGODB_URI ? "Found" : "Missing");
 
 import { chatMessageSchema } from "./schema/chat.schema";
 import { Chat } from "../model/chat.model";
@@ -12,7 +12,7 @@ import { Stream } from "../model/stream.model";
 import { User } from "../model/user.model";
 import dbConnect from "./db";
 
-console.log("Imports done. Creating server...");
+// console.log("Imports done. Creating server...");
 const httpServer = http.createServer();
 
 export const io = new Server(httpServer, {
@@ -75,8 +75,6 @@ io.on("connection", (socket) => {
             return;
         }
 
-        // Removed restriction: Streamers can now chat in their own stream.
-
         // Check if user is blocked
         if (stream.blockedUsers.includes(user.id)) {
              socket.emit("chat:error", { message: "You are blocked from this stream." });
@@ -111,7 +109,6 @@ io.on("connection", (socket) => {
               if (!stream.blockedUsers.includes(userIdToBlock)) {
                   stream.blockedUsers.push(userIdToBlock);
                   await stream.save();
-                  // Notify the blocked user? Or just let them fail next chat.
                   io.to(streamId).emit("user:blocked", { userId: userIdToBlock }); // Notify clients to update UI
               }
           }

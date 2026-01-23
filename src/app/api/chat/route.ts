@@ -57,9 +57,16 @@ export async function GET(req: NextRequest){
 
         const chats = await Chat.find({ streamId })
             .sort({ createdAt: 1 })
-            .populate("userId", "username image");
+            .populate("userId", "username image")
+            .lean();
 
-        return NextResponse.json({ chats }, { status: 200 });
+        const formattedChats = chats.map((chat: any) => ({
+            ...chat,
+            id: chat._id.toString(),
+            _id: undefined 
+        }));
+
+        return NextResponse.json({ chats: formattedChats }, { status: 200 });
 
     } catch (error) {
         console.log("Error fetching chats:", error);

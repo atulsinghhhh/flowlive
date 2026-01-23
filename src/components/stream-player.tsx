@@ -3,12 +3,30 @@
 import { useEffect, useRef, useState } from "react";
 import type { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 import { useAgora } from "../context/agora-provider";
+import { Loader2 } from "lucide-react";
 
 export const StreamPlayer = ({ channelName }: { channelName: string }) => {
   const { client } = useAgora();
   const [isConnected, setIsConnected] = useState(false);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | undefined>(undefined);
   const videoRef = useRef<HTMLDivElement>(null);
   const streamIdRef = useRef<string | null>(null);
+
+  // Fetch stream info for thumbnail
+  useEffect(() => {
+      const fetchInfo = async () => {
+          try {
+              const res = await fetch(`/api/stream?channelName=${channelName}`);
+              const data = await res.json();
+              if (data.stream?.thumbnailUrl) {
+                  setThumbnailUrl(data.stream.thumbnailUrl);
+              }
+          } catch (e) {
+              console.error("Failed to fetch stream info", e);
+          }
+      };
+      fetchInfo();
+  }, [channelName]);
 
   useEffect(() => {
     if (!client) return;
@@ -99,9 +117,21 @@ export const StreamPlayer = ({ channelName }: { channelName: string }) => {
     <div className="flex flex-col gap-4 w-full h-full">
       <div 
         ref={videoRef} 
-        className="w-full h-full aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center text-white relative"
+        className="w-full h-full aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center text-white relative group"
       >
-        {!isConnected && <p className="animate-pulse">Connecting to stream...</p>}
+        {!isConnected && (
+            <>
+                {thumbnailUrl ? (
+                    <img src={thumbnailUrl} alt="Stream Cover" className="absolute inset-0 w-full h-full object-cover opacity-50" />
+                ) : (
+                    <div className="absolute inset-0 bg-linear-to-br from-purple-900/20 to-black pointer-events-none" />
+                )}
+                <div className="z-10 flex flex-col items-center gap-2">
+                    <Loader2 className="animate-spin text-purple-500 w-8 h-8" />
+                    <p className="font-bold text-sm tracking-wide animate-pulse">Connecting to Live...</p>
+                </div>
+            </>
+        )}
       </div>
       <div className="text-white font-medium">
         Watching: <span className="text-purple-400">{channelName}</span>
