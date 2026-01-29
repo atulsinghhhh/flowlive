@@ -9,11 +9,25 @@ import { EventPlayer } from "@/components/event/event-player";
 import { StreamBroadcaster } from "@/components/stream-broadcaster"; 
 import { StreamChat } from "@/components/stream-chat";
 
+interface WatchEvent {
+    _id: string;
+    title: string;
+    agoraChannel: string;
+    streamerId: {
+        _id: string;
+    };
+}
+
+interface EventResponse {
+    event: WatchEvent;
+    hasTicket: boolean;
+}
+
 export default function WatchEventPage() {
     const { id } = useParams();
     const router = useRouter();
     const { data: session } = useSession();
-    const [event, setEvent] = useState<any>(null);
+    const [event, setEvent] = useState<WatchEvent | null>(null);
     const [loading, setLoading] = useState(true);
     const [authorized, setAuthorized] = useState(false);
 
@@ -21,7 +35,7 @@ export default function WatchEventPage() {
         const checkAccess = async () => {
              try {
                 const res = await fetch(`/api/events/${id}`);
-                const data = await res.json();
+                const data: EventResponse = await res.json();
                 
                 if (!res.ok || !data.event) { 
                     router.push("/404");
@@ -64,9 +78,9 @@ export default function WatchEventPage() {
             <div className="flex-1 flex overflow-hidden">
                 <div className="flex-1 relative">
                     {isOwner ? (
-                         <StreamBroadcaster channelName={event.agoraChannel} />
+                        <StreamBroadcaster channelName={event.agoraChannel} />
                     ) : (
-                         <EventPlayer channelName={event.agoraChannel} eventId={event._id} />
+                        <EventPlayer channelName={event.agoraChannel} />
                     )}
                 </div>
                 {/* Chat Sidebar */}

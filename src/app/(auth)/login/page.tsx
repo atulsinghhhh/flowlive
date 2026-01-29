@@ -71,7 +71,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div className="space-y-2">
-            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1">Email Address</label>
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1">Email</label>
             <input
               name="email"
               type="email"

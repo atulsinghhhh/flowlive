@@ -67,7 +67,7 @@ io.on("connection", (socket) => {
 
         // Check if stream exists and if user is streamer
         // Check if stream/event exists
-        let stream = await Stream.findById(streamId);
+        const stream = await Stream.findById(streamId);
         let isEvent = false;
 
         if (!stream) {

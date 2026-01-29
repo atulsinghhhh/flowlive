@@ -7,7 +7,7 @@ import { StreamCard } from "@/components/stream-card";
 import { EventCard } from "@/components/event/event-card";
 import { RecommendedSidebar } from "@/components/recommended-sidebar";
 import { HeroCarousel } from "@/components/hero-carousel";
-import { Loader2, LogOut, LayoutDashboard } from "lucide-react";
+import { LogOut, LayoutDashboard } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 
 interface StreamType {
@@ -22,10 +22,23 @@ interface StreamType {
     };
 }
 
+interface EventType {
+    _id: string;
+    title: string;
+    description: string;
+    price: number;
+    date: string;
+    streamerId: {
+        username: string;
+        avatar?: string;
+    };
+    thumbnailUrl?: string;
+}
+
 export default function HomePage() {
     const { data: session, status } = useSession();
     const [streams, setStreams] = useState<StreamType[]>([]);
-    const [events, setEvents] = useState<any[]>([]);
+    const [events, setEvents] = useState<EventType[]>([]);
     const [loading, setLoading] = useState(true);
     
     useEffect(() => {

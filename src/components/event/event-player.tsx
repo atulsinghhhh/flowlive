@@ -4,9 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import type { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 import { useAgora } from "@/context/agora-provider";
 import { Loader2 } from "lucide-react";
-import Image from "next/image";
 
-export const EventPlayer = ({ channelName, eventId }: { channelName: string; eventId: string }) => {
+export const EventPlayer = ({ channelName }: { channelName: string }) => {
   const { client } = useAgora();
   const [isConnected, setIsConnected] = useState(false);
   const videoRef = useRef<HTMLDivElement>(null);

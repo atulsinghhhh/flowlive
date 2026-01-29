@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Calendar, Tag } from 'lucide-react';
+import Image from 'next/image';
+import { Calendar } from 'lucide-react';
 
 interface EventCardProps {
     event: {
@@ -23,10 +24,12 @@ export const EventCard = ({ event }: EventCardProps) => {
                 {/* Thumbnail */}
                 <div className="aspect-video bg-zinc-800 relative">
                     {event.thumbnailUrl ? (
-                        <img 
-                            src={event.thumbnailUrl} 
-                            alt={event.title} 
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        <Image
+                            src={event.thumbnailUrl}
+                            alt={event.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center text-zinc-700">
@@ -44,8 +47,16 @@ export const EventCard = ({ event }: EventCardProps) => {
                         {event.title}
                     </h3>
                     <div className="flex items-center gap-2 text-zinc-400 text-sm mt-2">
-                        <div className="w-6 h-6 rounded-full bg-zinc-700 overflow-hidden shrink-0">
-                           {event.streamerId.avatar && <img src={event.streamerId.avatar} alt={event.streamerId.username} />}
+                                <div className="w-6 h-6 rounded-full bg-zinc-700 overflow-hidden shrink-0">
+                                    {event.streamerId.avatar && (
+                                          <Image
+                                                src={event.streamerId.avatar}
+                                                alt={event.streamerId.username}
+                                                width={24}
+                                                height={24}
+                                                className="w-full h-full object-cover"
+                                          />
+                                    )}
                         </div>
                         <span>{event.streamerId.username}</span>
                     </div>

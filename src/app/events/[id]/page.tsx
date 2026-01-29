@@ -2,14 +2,35 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import { Calendar, CheckCircle, Play, User } from "lucide-react";
 import { useSession } from "next-auth/react";
+
+interface EventDetails {
+    _id: string;
+    title: string;
+    description: string;
+    price: number;
+    date: string;
+    agoraChannel: string;
+    streamerId: {
+        _id: string;
+        username: string;
+        avatar?: string | null;
+        bio?: string | null;
+    };
+}
+
+interface EventResponse {
+    event: EventDetails;
+    hasTicket: boolean;
+}
 
 export default function EventDetailsPage() {
     const {data: session} = useSession();
     const { id } = useParams();
     const router = useRouter();
-    const [event, setEvent] = useState<any>(null);
+    const [event, setEvent] = useState<EventDetails | null>(null);
     const [hasTicket, setHasTicket] = useState(false);
     const [loading, setLoading] = useState(true);
     const [purchasing, setPurchasing] = useState(false);
@@ -19,7 +40,7 @@ export default function EventDetailsPage() {
             try {
                 const res = await fetch(`/api/events/${id}`);
                 if (!res.ok) throw new Error("Event not found");
-                const data = await res.json();
+                const data: EventResponse = await res.json();
                 setEvent(data.event);
                 setHasTicket(data.hasTicket);
             } catch (error) {
@@ -32,6 +53,7 @@ export default function EventDetailsPage() {
     }, [id]);
 
     const buyTicket = async () => {
+        if (!event) return;
         if (!confirm(`Confirm purchase for $${event.price}?`)) return;
         setPurchasing(true);
         try {
@@ -46,8 +68,12 @@ export default function EventDetailsPage() {
 
             alert("Ticket Purchased! Confirmation email sent.");
             setHasTicket(true);
-        } catch (error: any) {
-            alert(error.message);
+        } catch (error) {
+            if (error instanceof Error) {
+                alert(error.message);
+            } else {
+                alert("Purchase failed");
+            }
         } finally {
             setPurchasing(false);
         }
@@ -97,7 +123,15 @@ export default function EventDetailsPage() {
                             <div className="flex items-center gap-4 text-zinc-300">
                                 <div className="flex items-center gap-2">
                                     <div className="w-6 h-6 rounded-full bg-zinc-700 overflow-hidden">
-                                        {event.streamerId.avatar && <img src={event.streamerId.avatar} className="w-full h-full object-cover" />}
+                                        {event.streamerId.avatar && (
+                                            <Image
+                                                src={event.streamerId.avatar}
+                                                alt={`${event.streamerId.username} avatar`}
+                                                width={24}
+                                                height={24}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        )}
                                     </div>
                                     <span className="font-semibold">{event.streamerId.username}</span>
                                 </div>
@@ -183,7 +217,13 @@ export default function EventDetailsPage() {
                          <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex items-start gap-4">
                              <div className="w-16 h-16 rounded-full bg-zinc-800 overflow-hidden shrink-0">
                                 {event.streamerId.avatar ? (
-                                    <img src={event.streamerId.avatar} className="w-full h-full object-cover" />
+                                    <Image
+                                        src={event.streamerId.avatar}
+                                        alt={`${event.streamerId.username} avatar`}
+                                        width={64}
+                                        height={64}
+                                        className="w-full h-full object-cover"
+                                    />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center"><User /></div>
                                 )}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Calendar, Upload } from "lucide-react";
+import { Calendar } from "lucide-react";
 
 export default function CreateEventPage() {
     const router = useRouter();

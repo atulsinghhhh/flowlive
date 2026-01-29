@@ -92,16 +92,20 @@ export const StreamBroadcaster = ({ channelName }: { channelName: string }) => {
                 videoTrack.play(videoRef.current);
             }
         }
-      } catch (error: any) {
-        if (error.code === "OPERATION_ABORTED") {
-            // This is expected when the component unmounts during initialization
-            return;
-        }
-        console.error("Failed to initialize stream:", error);
-        if (mounted && agoraClient) {
-             // Attempt cleanup on error
-             agoraClient.leave().catch(console.error);
-        }
+            } catch (error) {
+                const errorCode =
+                        typeof error === "object" && error !== null && "code" in error
+                                ? (error as { code?: string }).code
+                                : undefined;
+                if (errorCode === "OPERATION_ABORTED") {
+                        // This is expected when the component unmounts during initialization
+                        return;
+                }
+                console.error("Failed to initialize stream:", error);
+                if (mounted && agoraClient) {
+                         // Attempt cleanup on error
+                         agoraClient.leave().catch(console.error);
+                }
       }
     };
 

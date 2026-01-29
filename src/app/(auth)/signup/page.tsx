@@ -80,7 +80,7 @@ export default function SignupPage() {
             />
           </div>
           <div>
-            <label className="mb-2 block text-sm font-bold text-muted-foreground">Email Address</label>
+            <label className="mb-2 block text-sm font-bold text-muted-foreground">Email</label>
             <input
               name="email"
               type="email"
